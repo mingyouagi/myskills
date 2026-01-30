@@ -86,11 +86,14 @@ function extractKeywords(text, expandSynonyms = false) {
     'these', 'those', 'use', 'using', 'used'
   ]);
 
-  const words = text
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, ' ')
-    .split(/\s+/)
-    .filter(word => word.length > 2 && !stopWords.has(word));
+  const normalized = text.toLowerCase();
+  const asciiWords = normalized.match(/[a-z0-9]+/g) || [];
+  const cjkWords = normalized.match(/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]{2,}/gu) || [];
+
+  const words = [
+    ...asciiWords.filter(word => word.length > 2 && !stopWords.has(word)),
+    ...cjkWords
+  ];
 
   return expandSynonyms ? expandWithSynonyms(words) : words;
 }

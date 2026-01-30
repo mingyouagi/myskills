@@ -2,7 +2,7 @@
 name: skill-router
 description: Use when facing many skills and unsure which to choose. Provides intelligent skill discovery via search, routing, and categorization.
 category: meta
-triggers: [find skill, which skill, search skills, route, discover, too many skills, confused about skills]
+triggers: [find skill, which skill, search skills, route, discover, too many skills, confused about skills, 找技能, 用哪个技能, 搜索技能, 路由技能, 技能推荐, 不知道用什么技能]
 ---
 
 # Skill Router

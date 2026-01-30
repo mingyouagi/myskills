@@ -43,6 +43,13 @@ describe('extractKeywords', () => {
     expect(keywords).toContain('abc');
     expect(keywords).toContain('abcd');
   });
+
+  it('extracts CJK keywords', () => {
+    const keywords = extractKeywords('调试 失败 测试');
+    expect(keywords).toContain('调试');
+    expect(keywords).toContain('失败');
+    expect(keywords).toContain('测试');
+  });
 });
 
 describe('extractFrontmatter', () => {
