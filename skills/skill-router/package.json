@@ -4,6 +4,9 @@
   "description": "Intelligent skill discovery and routing for AI agents with large skill libraries",
   "type": "module",
   "main": "./src/index.js",
+  "bin": {
+    "skill-router": "./src/cli.js"
+  },
   "exports": {
     ".": "./src/index.js",
     "./router": "./src/router.js",

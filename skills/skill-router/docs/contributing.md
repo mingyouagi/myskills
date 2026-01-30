@@ -15,13 +15,23 @@ Thank you for your interest in contributing! 🎉
 
 ```
 skill-router/
-├── skill-index.js              # Index building + keyword extraction
-├── skill-watcher.js            # Auto-discovery (file watch + polling)
-├── skill-router-standalone.js  # Standalone API
-├── skill-router.js             # Claude Code plugin integration
-├── test-router.js              # Router tests
-├── test-watcher.js             # Watcher tests
-└── SKILL.md                    # Meta-skill documentation
+├── src/
+│   ├── cli.js       # Command-line interface
+│   ├── core.js      # Shared routing logic
+│   ├── indexer.js   # Index building + keyword extraction
+│   ├── router.js    # Standalone API with caching
+│   ├── plugin.js    # Claude Code plugin integration
+│   ├── watcher.js   # Auto-discovery (file watch + polling)
+│   └── index.js     # Main exports
+├── tests/
+│   ├── search.test.js   # Search/routing tests
+│   ├── index.test.js    # Indexer tests
+│   └── watcher.test.js  # Watcher tests
+├── docs/            # Documentation
+├── examples/        # Usage examples
+├── SKILL.md         # Meta-skill documentation
+├── README.md        # Quick start guide
+└── package.json     # Package configuration
 ```
 
 ### Making Changes
@@ -51,10 +61,14 @@ Run all tests:
 npm test
 ```
 
-Run specific tests:
+Run tests in watch mode:
 ```bash
-npm run test:router   # Router functionality
-npm run test:watcher  # Watcher functionality
+npm run test:watch
+```
+
+Run with coverage:
+```bash
+npm run test:coverage
 ```
 
 ### Code Style

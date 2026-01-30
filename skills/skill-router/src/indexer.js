@@ -97,23 +97,51 @@ function extractKeywords(text, expandSynonyms = false) {
 
 function findSkillFiles(dir, maxDepth = 3) {
   const skills = [];
+  const visited = new Set(); // Track visited paths to avoid cycles
 
   function recurse(currentDir, depth) {
     if (depth > maxDepth || !fs.existsSync(currentDir)) return;
+
+    // Resolve real path to detect cycles
+    let realPath;
+    try {
+      realPath = fs.realpathSync(currentDir);
+    } catch {
+      return; // Skip if can't resolve
+    }
+
+    if (visited.has(realPath)) return; // Skip if already visited
+    visited.add(realPath);
 
     const entries = fs.readdirSync(currentDir, { withFileTypes: true });
 
     for (const entry of entries) {
       const fullPath = path.join(currentDir, entry.name);
 
-      if (entry.isDirectory()) {
+      // Handle both directories and symlinks to directories
+      let isDir = entry.isDirectory();
+      if (entry.isSymbolicLink()) {
+        try {
+          const stat = fs.statSync(fullPath);
+          isDir = stat.isDirectory();
+        } catch {
+          continue; // Skip broken symlinks
+        }
+      }
+
+      if (isDir) {
         const skillFile = path.join(fullPath, 'SKILL.md');
         if (fs.existsSync(skillFile)) {
-          skills.push({
-            dir: fullPath,
-            file: skillFile,
-            name: entry.name
-          });
+          // Use real path for deduplication
+          const realSkillPath = fs.realpathSync(fullPath);
+          if (!visited.has(realSkillPath + ':skill')) {
+            visited.add(realSkillPath + ':skill');
+            skills.push({
+              dir: fullPath,
+              file: skillFile,
+              name: entry.name
+            });
+          }
         }
         recurse(fullPath, depth + 1);
       }

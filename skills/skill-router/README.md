@@ -9,23 +9,46 @@ Part of [myskills](https://github.com/mingyouagi/myskills) collection.
 
 ## Quick Start
 
-> **Note**: Not yet published to npm. Use Git installation:
+### Installation
 
 ```bash
-# Install from GitHub (when available)
-# npm install skill-router
-
-# For now, clone the repository:
+# Clone the repository
 cd ~/.claude/skills
 git clone https://github.com/mingyouagi/myskills.git
+
+# Install and link CLI globally
+cd myskills/skills/skill-router
+npm install
+npm link
 ```
+
+### CLI Usage (Recommended)
+
+```bash
+# Search for skills
+skill-router search "debug"
+
+# Auto-route to best skill
+skill-router route "fix a bug"
+
+# List all categories
+skill-router list
+
+# Get skill details
+skill-router detail systematic-debugging
+
+# JSON output
+skill-router search "test" --json
+```
+
+### Programmatic Usage
 
 ```javascript
 import { routeSkill, searchSkills } from 'skill-router';
 
 // Auto-route based on intent
 const best = routeSkill("debug failing test");
-// → { skill: "systematic-debugging", confidence: 0.95 }
+// → { skill: { id: "systematic-debugging", ... }, confidence: 0.95 }
 
 // Or search with ranking
 const results = searchSkills("fix bug", { limit: 3 });
@@ -46,26 +69,39 @@ const results = searchSkills("fix bug", { limit: 3 });
 - 🔍 Semantic search with synonyms
 - 🗂️ Auto-categorization
 - 🔄 Auto-discovery (file watch + polling)
-- 📦 Zero dependencies
+- 🔗 Symlink support
+- 📦 Zero runtime dependencies
 
 ## Usage
 
-### Basic Search
+### CLI Commands
+
+| Command | Description |
+|---------|-------------|
+| `skill-router search <query>` | Search skills by keyword |
+| `skill-router route <intent>` | Auto-route to best skill |
+| `skill-router list` | List all skill categories |
+| `skill-router detail <id>` | Show skill details |
+
+Options:
+- `--limit, -l <n>` - Limit results (default: 5)
+- `--project, -p <dir>` - Add project skills directory
+- `--json` - Output as JSON
+
+### Programmatic API
 
 ```javascript
-import { searchSkills } from 'skill-router';
+import { searchSkills, routeSkill, listCategories } from 'skill-router';
 
+// Search
 const results = searchSkills("create feature", { limit: 3 });
-// → Returns ranked skills with confidence scores
-```
 
-### Auto-Routing
-
-```javascript
-import { routeSkill } from 'skill-router';
-
+// Route
 const route = routeSkill("fix a bug");
 // → { skill, confidence, command }
+
+// List categories
+const categories = listCategories();
 ```
 
 ### Auto-Discovery
@@ -87,12 +123,6 @@ startWatching({
 // .claude/plugin/skill-router.js
 import { SkillRouterPlugin } from 'skill-router/plugin';
 export default SkillRouterPlugin;
-```
-
-Then use via tools:
-```
-route_skill("create new feature")
-search_skills("debug", limit=5)
 ```
 
 ## Documentation
@@ -121,6 +151,7 @@ npm run test:coverage
 
 ## Architecture
 
+- `src/cli.js` - Command-line interface
 - `src/indexer.js` - Index building, keywords, synonyms
 - `src/router.js` - Search and routing logic
 - `src/watcher.js` - File watching, auto-discovery

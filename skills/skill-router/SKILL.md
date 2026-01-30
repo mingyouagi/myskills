@@ -9,6 +9,30 @@ triggers: [find skill, which skill, search skills, route, discover, too many ski
 
 A meta-skill that helps agents efficiently discover and select the right skills from a large skill library.
 
+## Quick Start (CLI)
+
+**Use the CLI tool directly via Bash - this is the recommended way:**
+
+```bash
+# Search for skills
+skill-router search "debug"
+
+# Auto-route to best skill based on intent
+skill-router route "fix a bug"
+
+# List all skill categories
+skill-router list
+
+# Get skill details
+skill-router detail superpowers:brainstorming
+
+# Specify project skills directory
+skill-router search "test" -p ./.claude/skills
+
+# JSON output for programmatic use
+skill-router list --json
+```
+
 ## Problem Solved
 
 When skill libraries grow large (10+ skills), agents face:
@@ -174,7 +198,7 @@ Total: ~100 tokens
 ### As Claude Code Plugin
 
 ```javascript
-import { SkillRouterPlugin } from './skill-router.js';
+import { SkillRouterPlugin } from './src/plugin.js';
 
 export default SkillRouterPlugin;
 ```
@@ -182,7 +206,16 @@ export default SkillRouterPlugin;
 ### Standalone Usage
 
 ```javascript
-import { searchSkills, routeSkill } from './skill-router.js';
+import { searchSkills, routeSkill } from './src/index.js';
+
+const results = searchSkills("debug issue", { limit: 3 });
+const best = routeSkill("fix failing tests");
+```
+
+### CommonJS Usage
+
+```javascript
+const { searchSkills, routeSkill } = require('./src/router.js');
 
 const results = searchSkills("debug issue", { limit: 3 });
 const best = routeSkill("fix failing tests");
@@ -291,7 +324,7 @@ Skill Router automatically detects when skills are added, modified, or removed.
 ### Enabling Auto-Updates
 
 ```javascript
-import { startWatching, stopWatching } from './skill-router-standalone.js';
+import { startWatching, stopWatching } from './src/index.js';
 
 const watcher = startWatching({
   projectSkillsDir: '.claude/skills',
@@ -342,7 +375,7 @@ stopWatching();
 If you need immediate refresh without waiting:
 
 ```javascript
-import { invalidateCache, getIndex } from './skill-router-standalone.js';
+import { invalidateCache, getIndex } from './src/index.js';
 
 invalidateCache();  // Clear cached index
 const freshIndex = getIndex();  // Rebuilds from filesystem

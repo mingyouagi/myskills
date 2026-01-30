@@ -2,7 +2,13 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { tool } from '@anthropic/claude-code-plugin/tool';
-import * as skillIndex from './skill-index.js';
+import * as skillIndex from './indexer.js';
+import {
+  searchSkillsWithIndex,
+  routeSkillWithIndex,
+  listCategoriesFromIndex,
+  getSkillDetailsFromIndex
+} from './core.js';
 
 const homeDir = os.homedir();
 
@@ -31,122 +37,27 @@ function getIndex(projectSkillsDir = null) {
   return cachedIndex;
 }
 
-function scoreSkill(skill, query, queryKeywords) {
-  let score = 0;
-
-  const queryLower = query.toLowerCase();
-  const descLower = skill.description.toLowerCase();
-  const nameLower = skill.name.toLowerCase();
-
-  if (nameLower === queryLower) {
-    score += 100;
-  } else if (nameLower.includes(queryLower) || queryLower.includes(nameLower)) {
-    score += 50;
-  }
-
-  for (const trigger of skill.triggers) {
-    if (queryLower.includes(trigger.toLowerCase())) {
-      score += 30;
-    }
-  }
-
-  const matchedKeywords = queryKeywords.filter(kw => skill.keywords.includes(kw));
-  score += matchedKeywords.length * 10;
-
-  if (descLower.includes(queryLower)) {
-    score += 20;
-  }
-
-  for (const queryWord of queryKeywords) {
-    if (descLower.includes(queryWord)) {
-      score += 5;
-    }
-  }
-
-  return score;
-}
-
+// Public API - wraps core functions with index management
 function searchSkills(query, options = {}) {
-  const { limit = 5, category = null, projectSkillsDir = null } = options;
+  const { projectSkillsDir = null, ...searchOptions } = options;
   const index = getIndex(projectSkillsDir);
-  const queryKeywords = skillIndex.extractKeywords(query, true);
-
-  let candidates = Object.values(index.skills);
-
-  if (category && index.categories[category]) {
-    const categorySkillIds = new Set(index.categories[category]);
-    candidates = candidates.filter(s => categorySkillIds.has(s.id));
-  }
-
-  const scored = candidates.map(skill => ({
-    skill,
-    score: scoreSkill(skill, query, queryKeywords)
-  }));
-
-  scored.sort((a, b) => b.score - a.score);
-
-  return scored
-    .filter(item => item.score > 0)
-    .slice(0, limit)
-    .map(item => ({
-      id: item.skill.id,
-      name: item.skill.name,
-      description: item.skill.description,
-      category: item.skill.category,
-      score: item.score,
-      path: item.skill.path
-    }));
+  return searchSkillsWithIndex(query, index, searchOptions);
 }
 
 function routeSkill(intent, options = {}) {
   const { projectSkillsDir = null } = options;
-  const results = searchSkills(intent, { limit: 1, projectSkillsDir });
-
-  if (results.length === 0) {
-    return null;
-  }
-
-  const best = results[0];
-
-  if (best.score < 10) {
-    return null;
-  }
-
-  return {
-    skill: best,
-    confidence: Math.min(best.score / 100, 1.0),
-    action: 'use_skill',
-    command: `use_skill("${best.id}")`
-  };
+  const index = getIndex(projectSkillsDir);
+  return routeSkillWithIndex(intent, index);
 }
 
 function listCategories(projectSkillsDir = null) {
   const index = getIndex(projectSkillsDir);
-  return Object.entries(index.categories).map(([category, skillIds]) => ({
-    category,
-    count: skillIds.length,
-    skills: skillIds
-  }));
+  return listCategoriesFromIndex(index);
 }
 
 function getSkillDetails(skillId, projectSkillsDir = null) {
   const index = getIndex(projectSkillsDir);
-  const skill = index.skills[skillId];
-
-  if (!skill) {
-    return null;
-  }
-
-  const skillFile = path.join(skill.path, 'SKILL.md');
-  let content = '';
-  try {
-    content = fs.readFileSync(skillFile, 'utf8');
-  } catch {}
-
-  return {
-    ...skill,
-    content
-  };
+  return getSkillDetailsFromIndex(skillId, index);
 }
 
 const searchSkillsTool = tool({
@@ -260,15 +171,19 @@ const getSkillDetailsTool = tool({
       return `Skill "${skill_id}" not found. Run \`search_skills\` to find available skills.`;
     }
 
-    return `**${details.name}** (${details.id})
+    let output = `**${details.name}** (${details.id})
 
 Category: ${details.category}
-Triggers: ${details.triggers.join(', ') || 'none'}
-Path: ${details.path}
+Triggers: ${details.triggers?.join(', ') || 'none'}
+Path: ${details.path}`;
 
----
+    if (details.error) {
+      output += `\n\nWarning: ${details.error}`;
+    }
 
-${details.content}`;
+    output += `\n\n---\n\n${details.content}`;
+
+    return output;
   }
 });
 
