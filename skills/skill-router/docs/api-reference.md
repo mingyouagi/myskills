@@ -1,97 +1,423 @@
-# Skill Router
+# API Reference
 
-> Intelligent skill discovery and routing for AI agents with large skill libraries
+Complete API documentation for skill-router.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+## Table of Contents
 
-## Problem
+- [Core Functions](#core-functions)
+- [Configuration Functions](#configuration-functions)
+- [Indexer Functions](#indexer-functions)
+- [Watcher Functions](#watcher-functions)
+- [Plugin Integration](#plugin-integration)
+- [CLI Commands](#cli-commands)
 
-When AI agents have access to 10+ skills, they face:
-- **Discovery confusion**: Which skill applies to my task?
-- **Naming mismatch**: Skill names don't match intent keywords  
-- **Token waste**: Loading full skill lists into context every time
-- **False negatives**: Missing relevant skills due to poor search
+## Core Functions
 
-## Solution
+### `searchSkills(query, options)`
 
-Skill Router provides meta-tools for intelligent skill management:
-
-```javascript
-// Before: Agent loads 2000 tokens of skill list
-find_skills() → [all skills...] → reasoning → use_skill()
-
-// After: Agent uses ~50 tokens
-route_skill("debug failing test") → systematic-debugging (95% confidence)
-```
-
-**Result**: 96% token reduction + better skill selection
-
-## Features
-
-- 🎯 **Intent-based routing**: `route_skill("fix bug")` → automatic skill selection
-- 🔍 **Semantic search**: Synonym expansion + keyword matching
-- 🗂️ **Auto-categorization**: Infers categories from skill content
-- 🔄 **Auto-discovery**: Detects added/updated/removed skills in real-time
-- 📦 **Zero config**: Works out-of-the-box with Claude Code/Superpowers
-
-## Quick Start
-
-### Installation
-
-```bash
-# Not yet published to npm
-# For now, clone the repository:
-cd ~/.claude/skills
-git clone https://github.com/mingyouagi/myskills.git
-```
-
-### Basic Usage
+Search for skills with ranking.
 
 ```javascript
-import { searchSkills, routeSkill } from 'skill-router';
+import { searchSkills } from 'skill-router';
 
-// Search for skills
 const results = searchSkills("debug issue", { limit: 3 });
 // → [{ id: "systematic-debugging", score: 105, ... }, ...]
+```
 
-// Auto-route based on intent
+**Parameters:**
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `query` | string | required | Intent or keywords |
+| `options.limit` | number | 5 | Max results |
+| `options.category` | string | null | Filter by category |
+| `options.projectSkillsDir` | string | null | Additional skill directory |
+
+**Returns:** `Array<{ id, name, description, category, score, path }>`
+
+---
+
+### `routeSkill(intent, options)`
+
+Automatically select the best skill for an intent.
+
+```javascript
+import { routeSkill } from 'skill-router';
+
 const best = routeSkill("fix a failing test");
 // → { skill: {...}, confidence: 0.95, command: 'use_skill("systematic-debugging")' }
 ```
 
-### As Claude Code Plugin
+**Parameters:**
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `intent` | string | required | What you want to accomplish |
+| `options.projectSkillsDir` | string | null | Additional skill directory |
+
+**Returns:** `{ skill, confidence, action, command }` or `null`
+
+---
+
+### `listCategories(projectSkillsDir)`
+
+List all skill categories.
+
+```javascript
+import { listCategories } from 'skill-router';
+
+const categories = listCategories();
+// → [{ category: "technique", count: 3, skills: [...] }, ...]
+```
+
+**Returns:** `Array<{ category, count, skills }>`
+
+---
+
+### `getSkillDetails(skillId, projectSkillsDir)`
+
+Get full skill content and metadata.
+
+```javascript
+import { getSkillDetails } from 'skill-router';
+
+const skill = getSkillDetails("superpowers:systematic-debugging");
+```
+
+**Returns:** Skill object with content, or `null`
+
+---
+
+### `getIndex(projectSkillsDir)`
+
+Get the full skill index (cached).
+
+```javascript
+import { getIndex } from 'skill-router';
+
+const index = getIndex();
+console.log(`Loaded ${Object.keys(index.skills).length} skills`);
+```
+
+**Returns:** `{ skills, keywords, categories, version }`
+
+---
+
+### `invalidateCache()`
+
+Manually clear the cached index.
+
+```javascript
+import { invalidateCache, getIndex } from 'skill-router';
+
+invalidateCache();
+const freshIndex = getIndex(); // Rebuilds from filesystem
+```
+
+---
+
+## Configuration Functions
+
+### `getConfig()`
+
+Get merged configuration (preset + user config).
+
+```javascript
+import { getConfig } from 'skill-router';
+
+const config = getConfig();
+// → { preset: "claude-code", skillDirs: [...], pluginCacheDirs: [...], language: "en" }
+```
+
+**Returns:** Configuration object
+
+---
+
+### `getSkillDirs()`
+
+Get resolved skill directories from config.
+
+```javascript
+import { getSkillDirs } from 'skill-router';
+
+const dirs = getSkillDirs();
+// → [{ basePath: "/Users/me/.claude/skills", namespace: null }, ...]
+```
+
+**Returns:** `Array<{ basePath, namespace }>`
+
+---
+
+### `getPresets()`
+
+Get available preset names.
+
+```javascript
+import { getPresets } from 'skill-router';
+
+const presets = getPresets();
+// → ["claude-code", "codex", "opencode", "all", "custom"]
+```
+
+---
+
+### `getPreset(name)`
+
+Get preset configuration by name.
+
+```javascript
+import { getPreset } from 'skill-router';
+
+const preset = getPreset("claude-code");
+// → { skillDirs: [...], pluginCacheDirs: [...] }
+```
+
+---
+
+### `invalidateConfigCache()`
+
+Clear cached configuration (for hot reload).
+
+```javascript
+import { invalidateConfigCache } from 'skill-router';
+
+invalidateConfigCache();
+```
+
+---
+
+## Indexer Functions
+
+### `buildSkillIndex(skillDirs)`
+
+Build skill index from directories.
+
+```javascript
+import { buildSkillIndex } from 'skill-router';
+
+const index = buildSkillIndex([
+  { basePath: '/path/to/skills', namespace: null }
+]);
+```
+
+**Returns:** `{ skills, keywords, categories }`
+
+---
+
+### `extractFrontmatter(content)`
+
+Extract YAML frontmatter from skill content.
+
+```javascript
+import { extractFrontmatter } from 'skill-router';
+
+const { frontmatter, content } = extractFrontmatter(skillContent);
+```
+
+---
+
+### `extractKeywords(text)`
+
+Extract keywords from text with synonym expansion.
+
+```javascript
+import { extractKeywords } from 'skill-router';
+
+const keywords = extractKeywords("debug failing test");
+// → ["debug", "failing", "test", "fix", "bug", ...]
+```
+
+---
+
+### `findSkillFiles(dir, maxDepth)`
+
+Find all SKILL.md files in directory (follows symlinks).
+
+```javascript
+import { findSkillFiles } from 'skill-router';
+
+const skills = findSkillFiles('/path/to/skills', 3);
+// → [{ id: "my-skill", path: "/path/to/skills/my-skill", ... }, ...]
+```
+
+---
+
+## Watcher Functions
+
+### `startWatching(options)`
+
+Start monitoring skill directories for changes.
+
+```javascript
+import { startWatching } from 'skill-router';
+
+const watcher = startWatching({
+  projectSkillsDir: '.claude/skills',
+  pollInterval: 60000,
+  enableFileWatch: true,
+  enableGitCheck: false,
+  debounceMs: 500,
+
+  onChange: (changes) => {
+    console.log('Added:', changes.added);
+    console.log('Updated:', changes.updated);
+    console.log('Removed:', changes.removed);
+  },
+
+  onGitUpdates: (updates) => {
+    console.log('Git updates available:', updates);
+  }
+});
+```
+
+**Options:**
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `projectSkillsDir` | string | null | Project skills path |
+| `pollInterval` | number | 60000 | Polling interval in ms |
+| `enableFileWatch` | boolean | true | Enable fs.watch |
+| `enableGitCheck` | boolean | false | Check for remote updates |
+| `debounceMs` | number | 500 | Debounce delay |
+| `onChange` | function | null | Callback when skills change |
+| `onGitUpdates` | function | null | Callback when git updates available |
+
+**Returns:** SkillWatcher instance
+
+---
+
+### `stopWatching()`
+
+Stop all watchers.
+
+```javascript
+import { stopWatching } from 'skill-router';
+
+stopWatching();
+```
+
+---
+
+### `SkillWatcher` class
+
+Low-level watcher class for custom implementations.
+
+```javascript
+import { SkillWatcher } from 'skill-router';
+
+const watcher = new SkillWatcher(options);
+watcher.start();
+watcher.stop();
+```
+
+---
+
+## Plugin Integration
+
+### `SkillRouterPlugin`
+
+Claude Code plugin integration.
 
 ```javascript
 // .claude/plugin/skill-router.js
-import { SkillRouterPlugin } from 'skill-router';
+import { SkillRouterPlugin } from 'skill-router/plugin';
 
 export default SkillRouterPlugin;
 ```
 
-Then use via tools:
+Provides tools:
+- `route_skill(intent)` - Auto-route to best skill
+- `search_skills(query, limit)` - Search with ranking
+- `list_skill_categories()` - List categories
+- `get_skill_details(skill_id)` - Get skill content
+
+---
+
+## CLI Commands
+
+### `skill-router search <query>`
+
+Search for skills by keyword.
+
+```bash
+skill-router search "debug"
+skill-router search "test" --limit 3
+skill-router search "feature" --json
 ```
-route_skill("create new feature")
-search_skills("debug", limit=5)
-list_skill_categories()
+
+**Options:**
+- `--limit, -l <n>` - Limit results (default: 5)
+- `--project, -p <dir>` - Add project skills directory
+- `--json` - Output as JSON
+- `--lang <en|zh>` - Language (default: en)
+
+---
+
+### `skill-router route <intent>`
+
+Auto-route to best skill based on intent.
+
+```bash
+skill-router route "fix a bug"
+skill-router route "create new feature" --json
 ```
 
-## How It Works
+---
 
-### 1. Index Building
+### `skill-router list`
 
-Scans skill directories and builds an inverted index:
+List all skill categories.
 
-```javascript
+```bash
+skill-router list
+skill-router list --json
+```
+
+---
+
+### `skill-router detail <skill-id>`
+
+Show skill details.
+
+```bash
+skill-router detail systematic-debugging
+skill-router detail superpowers:brainstorming --json
+```
+
+---
+
+### `skill-router config`
+
+Show current configuration.
+
+```bash
+skill-router config
+skill-router config --json
+```
+
+---
+
+## Configuration File
+
+Create `~/.skill-router.json` or `./.skill-router.json`:
+
+```json
 {
-  skills: { "systematic-debugging": { name, description, triggers, ... } },
-  keywords: { "debug": ["systematic-debugging", ...], ... },
-  categories: { "technique": ["systematic-debugging", ...], ... }
+  "preset": "claude-code",
+  "language": "en",
+  "skillDirs": [
+    { "path": "/custom/skills", "namespace": "custom" }
+  ]
 }
 ```
 
-Cached for 5 minutes to avoid repeated filesystem scans.
+**Available presets:**
+- `claude-code` - Claude Code directories + plugin cache
+- `codex` - Codex directories
+- `opencode` - OpenCode directories
+- `all` - All supported tools
+- `custom` - Only custom directories
 
-### 2. Scoring Algorithm
+---
+
+## Scoring Algorithm
 
 Each skill is scored against the query:
 
@@ -102,236 +428,12 @@ Each skill is scored against the query:
 | Trigger word match | +30 |
 | Keyword overlap | +10 per keyword |
 | Description contains query | +20 |
-
-### 3. Auto-Discovery
-
-Three detection mechanisms working in parallel:
-
-| Mechanism | Trigger | Latency | Use Case |
-|-----------|---------|---------|----------|
-| **File Watch** | fs.watch events | ~1s | Real-time during development |
-| **Hash Poll** | Content hash comparison | ~60s | Reliable background detection |
-| **Git Check** | Remote repo updates | ~60s | Optional: long-running services |
-
-```javascript
-import { startWatching } from 'skill-router';
-
-startWatching({
-  enableFileWatch: true,
-  pollInterval: 60000,
-  
-  onChange: (changes) => {
-    console.log('Added:', changes.added);
-    console.log('Updated:', changes.updated);
-    console.log('Removed:', changes.removed);
-    // Cache automatically invalidated
-  }
-});
-```
-
-## API Reference
-
-### Core Functions
-
-#### `searchSkills(query, options)`
-
-Search for skills with ranking.
-
-**Parameters:**
-- `query` (string): Intent or keywords
-- `options.limit` (number): Max results (default: 5)
-- `options.category` (string): Filter by category
-- `options.projectSkillsDir` (string): Additional skill directory
-
-**Returns:** `Array<{ id, name, description, category, score, path }>`
-
-#### `routeSkill(intent, options)`
-
-Automatically select the best skill for an intent.
-
-**Parameters:**
-- `intent` (string): What you want to accomplish
-
-**Returns:** `{ skill, confidence, action, command }` or `null`
-
-#### `listCategories(projectSkillsDir)`
-
-List all skill categories.
-
-**Returns:** `Array<{ category, count, skills }>`
-
-#### `getSkillDetails(skillId, projectSkillsDir)`
-
-Get full skill content and metadata.
-
-**Returns:** Skill object with content, or `null`
-
-### Watcher Functions
-
-#### `startWatching(options)`
-
-Start monitoring skill directories for changes.
-
-**Options:**
-- `projectSkillsDir` (string): Project skills path
-- `pollInterval` (number): Polling interval in ms (default: 60000)
-- `enableFileWatch` (boolean): Enable fs.watch (default: true)
-- `enableGitCheck` (boolean): Check for remote updates (default: false)
-- `debounceMs` (number): Debounce delay (default: 500)
-- `onChange` (function): Callback when skills change
-- `onGitUpdates` (function): Callback when git updates available
-
-**Returns:** SkillWatcher instance
-
-#### `stopWatching()`
-
-Stop all watchers.
-
-#### `invalidateCache()`
-
-Manually clear the cached index.
-
-## Skill Format
-
-Enhance your skills with frontmatter for better routing:
-
-```yaml
----
-name: systematic-debugging
-description: Use when encountering bugs, test failures, or unexpected behavior
-category: technique
-triggers: [debug, bug, test failure, error, unexpected, broken, fix]
----
-
-# Systematic Debugging
-
-Your skill content here...
-```
-
-### Frontmatter Fields
-
-| Field | Purpose | Example |
-|-------|---------|---------|
-| `name` | Display name | `systematic-debugging` |
-| `description` | When to use | `Use when encountering bugs...` |
-| `category` | Grouping | `technique`, `process`, `discipline` |
-| `triggers` | Keywords for matching | `[debug, bug, test failure]` |
-
-## Directory Structure
-
-```
-~/.claude/
-├── superpowers/skills/          # superpowers namespace
-│   ├── brainstorming/
-│   │   └── SKILL.md
-│   └── systematic-debugging/
-│       └── SKILL.md
-├── skills/                      # personal namespace
-│   └── my-skill/
-│       └── SKILL.md
-└── {project}/.claude/skills/  # project namespace
-    └── project-skill/
-        └── SKILL.md
-```
-
-Priority: `project:skill` > `skill` > `superpowers:skill`
-
-## Examples
-
-### Development Setup
-
-```javascript
-import { startWatching, searchSkills } from 'skill-router';
-
-// Real-time updates during development
-startWatching({
-  projectSkillsDir: '.claude/skills',
-  enableFileWatch: true,
-  enableGitCheck: false,
-  
-  onChange: ({ added, updated, removed }) => {
-    console.log(`Skills changed: +${added.length} ~${updated.length} -${removed.length}`);
-  }
-});
-
-// Search will automatically use fresh index
-const results = searchSkills("implement feature");
-```
-
-### Production Service
-
-```javascript
-import { startWatching } from 'skill-router';
-
-// Polling only, with git update alerts
-startWatching({
-  enableFileWatch: false,
-  enableGitCheck: true,
-  pollInterval: 300000,  // 5 minutes
-  
-  onGitUpdates: (updates) => {
-    alertAdmin(`Skill updates available: ${updates[0].message}`);
-  }
-});
-```
-
-### Custom Integration
-
-```javascript
-import { getIndex, invalidateCache } from 'skill-router';
-
-// Manual control
-const index = getIndex();
-console.log(`Loaded ${Object.keys(index.skills).length} skills`);
-
-// Force refresh
-invalidateCache();
-const freshIndex = getIndex();
-```
-
-## Comparison
-
-### vs. find_skills (Claude Code built-in)
-
-| Feature | find_skills | skill-router |
-|---------|-------------|--------------|
-| Token cost | ~2000 tokens | ~50 tokens |
-| Search | None | Semantic + ranking |
-| Auto-routing | No | Yes |
-| Categories | No | Auto-inferred |
-| Auto-discovery | No | Yes (3 mechanisms) |
-
-### vs. Composio Tool Router
-
-Skill Router is inspired by [Composio's Tool Router](https://docs.composio.dev/tool-router/overview) but focused on:
-- Local skill management (not cloud services)
-- Token optimization for context-limited agents
-- Claude Code/Superpowers ecosystem integration
-
-## Performance
-
-- **Index building**: ~50ms for 15 skills
-- **Search query**: ~5ms with cached index
-- **File watch latency**: ~1s (debounced)
-- **Memory overhead**: ~100KB for 50 skills
-
-## Roadmap
-
-- [ ] Embedding-based semantic search (optional)
-- [ ] Skill dependency graph
-- [ ] Usage analytics (which skills are most useful)
-- [ ] Web UI for skill browsing
-- [ ] Multi-language support (currently English-optimized)
-
-## Contributing
-
-Contributions welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) first.
-
-## License
-
-MIT License - see [LICENSE](LICENSE)
-
-## Credits
-
-- Inspired by [Composio Tool Router](https://docs.composio.dev/tool-router/overview)
-- Built for [Claude Code](https://github.com/claude-code-ai) and [Superpowers](https://github.com/superpowers) ecosystems
+| Description contains keyword | +5 per keyword |
+
+**Confidence mapping:**
+| Score Range | Confidence | Recommendation |
+|-------------|------------|----------------|
+| 70+ | HIGH | Load immediately |
+| 40-69 | MEDIUM | Consider alternatives |
+| 10-39 | LOW | Weak match |
+| <10 | NONE | No relevant skill |

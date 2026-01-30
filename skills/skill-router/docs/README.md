@@ -7,6 +7,10 @@ Complete documentation for skill-router.
 ### Getting Started
 - [Quick Start](../README.md) - Installation and basic usage
 - [SKILL.md](../SKILL.md) - AI agent skill guide with usage patterns
+- [Configuration](../README.md#configuration) - Multi-tool configuration
+
+### CLI Reference
+- [CLI Commands](../README.md#cli-usage-recommended) - search, route, list, detail, config
 
 ### API & Reference
 - [API Reference](./api-reference.md) - Complete API documentation
@@ -21,13 +25,23 @@ Complete documentation for skill-router.
 
 | Topic | Document |
 |-------|----------|
-| Installation | [README.md](../README.md#quick-start) |
-| Basic Usage | [README.md](../README.md#usage) |
+| Installation | [README.md](../README.md#installation) |
+| CLI Usage | [README.md](../README.md#cli-usage-recommended) |
+| Configuration | [README.md](../README.md#configuration) |
+| Programmatic API | [README.md](../README.md#programmatic-usage) |
 | Routing Algorithm | [SKILL.md](../SKILL.md#how-routing-works) |
 | Auto-Discovery | [SKILL.md](../SKILL.md#auto-discovery--updates) |
 | Full API | [api-reference.md](./api-reference.md) |
 | Architecture | [README.md](../README.md#architecture) |
 | Performance | [README.md](../README.md#performance) |
+
+## 🔧 Supported Tools
+
+| Tool | Skills Directory |
+|------|------------------|
+| Claude Code | `~/.claude/skills/` + plugins cache |
+| Codex | `~/.codex/skills/` |
+| OpenCode | `~/.opencode/skills/` |
 
 ## 🔧 For Different Use Cases
 
