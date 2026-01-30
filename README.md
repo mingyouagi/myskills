@@ -41,8 +41,8 @@ Fetch and follow instructions from https://raw.githubusercontent.com/mingyouagi/
 **Manual Install**:
 
 ```bash
-# Create skills directory
-mkdir -p ~/.claude/skills
+# Create directories
+mkdir -p ~/.claude/skills ~/.claude/plugin
 
 # Clone myskills
 cd ~/.claude/skills
@@ -52,13 +52,19 @@ git clone https://github.com/mingyouagi/myskills.git
 cd myskills/skills/skill-router
 npm install
 
-# Create symlink so Claude Code can discover skill-router
-ln -s ~/.claude/skills/myskills/skills/skill-router ~/.claude/skills/skill-router
+# Create symlinks for skill discovery
+ln -sf ~/.claude/skills/myskills/skills/skill-router ~/.claude/skills/skill-router
+
+# Register plugin (enables route_skill, search_skills tools)
+ln -sf ~/.claude/skills/myskills/.claude/plugin/skill-router.js ~/.claude/plugin/skill-router.js
+
+# Restart Claude Code to load the plugin
 ```
 
 **Verify Installation**:
 ```bash
 ls ~/.claude/skills/skill-router/SKILL.md
+ls ~/.claude/plugin/skill-router.js
 ```
 
 ### Available Commands
