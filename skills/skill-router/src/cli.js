@@ -21,7 +21,7 @@ const messages = {
     limitDesc: '限制结果数量 (默认: 5)',
     projectDesc: '指定项目技能目录',
     jsonDesc: '输出 JSON 格式',
-    langDesc: '语言 (zh/en, 默认: zh)',
+    langDesc: '语言 (en/zh, 默认: en)',
     noMatch: '没有找到匹配的技能',
     noSkills: '没有找到任何技能',
     skillNotFound: '技能不存在',
@@ -58,7 +58,7 @@ const messages = {
     limitDesc: 'Limit number of results (default: 5)',
     projectDesc: 'Specify project skills directory',
     jsonDesc: 'Output as JSON',
-    langDesc: 'Language (zh/en, default: zh)',
+    langDesc: 'Language (en/zh, default: en)',
     noMatch: 'No matching skills found',
     noSkills: 'No skills found',
     skillNotFound: 'Skill not found',
@@ -83,8 +83,8 @@ const messages = {
   }
 };
 
-let lang = 'zh';
-let t = messages.zh;
+let lang = 'en';
+let t = messages.en;
 
 function printHelp() {
   console.log(`
