@@ -1,0 +1,14 @@
+node_modules/
+*.log
+.DS_Store
+.skill-manifest.json
+.skill-index-cache.json
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+dist/
+coverage/
+.env
+.env.local

@@ -1,0 +1,61 @@
+{
+  "name": "skill-router",
+  "version": "0.1.0",
+  "description": "Intelligent skill discovery and routing for AI agents with large skill libraries",
+  "type": "module",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./router": "./src/router.js",
+    "./plugin": "./src/plugin.js",
+    "./watcher": "./src/watcher.js",
+    "./indexer": "./src/indexer.js"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:legacy": "node examples/legacy-test-router.js && node examples/legacy-test-watcher.js"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "skill",
+    "router",
+    "discovery",
+    "claude-code",
+    "superpowers",
+    "llm",
+    "tool-router"
+  ],
+  "author": "TODO: Your Name <your@email.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "TODO: https://github.com/YOUR_USERNAME/skill-router.git"
+  },
+  "bugs": {
+    "url": "TODO: https://github.com/YOUR_USERNAME/skill-router/issues"
+  },
+  "homepage": "TODO: https://github.com/YOUR_USERNAME/skill-router#readme",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "peerDependencies": {
+    "@anthropic/claude-code-plugin": "^0.1.0"
+  },
+  "peerDependenciesMeta": {
+    "@anthropic/claude-code-plugin": {
+      "optional": true
+    }
+  },
+  "files": [
+    "src/",
+    "README.md",
+    "LICENSE",
+    "SKILL.md"
+  ],
+  "devDependencies": {
+    "vitest": "^3.2.4"
+  }
+}

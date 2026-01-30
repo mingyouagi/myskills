@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build artifacts
+dist/
+coverage/
+.vitest/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Skill-specific generated files
+.skill-manifest.json
+.skill-index-cache.json
+
+# Test artifacts
+*.test.log
+test-results/
