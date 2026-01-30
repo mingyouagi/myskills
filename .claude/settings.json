@@ -1,0 +1,26 @@
+{
+  "name": "myskills",
+  "version": "0.1.0",
+  "description": "A collection of intelligent skills for AI agents",
+  "skills": {
+    "skill-router": {
+      "path": "skills/skill-router/SKILL.md",
+      "description": "Intelligent skill discovery and routing",
+      "triggers": ["find skill", "which skill", "search skills", "route", "discover"]
+    }
+  },
+  "commands": {
+    "route_skill": {
+      "description": "Route to the best skill for an intent",
+      "usage": "/myskills:route <intent>"
+    },
+    "search_skills": {
+      "description": "Search for skills matching a query",
+      "usage": "/myskills:search <query>"
+    },
+    "list_skills": {
+      "description": "List all available skill categories",
+      "usage": "/myskills:list"
+    }
+  }
+}

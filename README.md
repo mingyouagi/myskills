@@ -30,29 +30,49 @@ routeSkill("debug failing test")
 
 ## Installation
 
-### As Claude Code Skills
+### For Claude Code
 
-Clone this repo to your Claude Code skills directory:
+**Quick Install** - Tell Claude:
+
+```
+Fetch and follow instructions from https://raw.githubusercontent.com/mingyouagi/myskills/main/.claude/INSTALL.md
+```
+
+**Manual Install**:
 
 ```bash
+# Create skills directory
+mkdir -p ~/.claude/skills
+
+# Clone myskills
 cd ~/.claude/skills
 git clone https://github.com/mingyouagi/myskills.git
+
+# Install dependencies
+cd myskills/skills/skill-router
+npm install
 ```
 
-Then use any skill via:
-```
-use_skill("myskills/skill-router")
+**Verify Installation**:
+```bash
+ls ~/.claude/skills/myskills/skills/skill-router/SKILL.md
 ```
 
-### As npm Packages
+### Available Commands
 
-> **Note**: Skills are not yet published to npm. For now, use Git installation or local development.
+Once installed, you can use these commands in Claude Code:
+
+| Command | Description |
+|---------|-------------|
+| `/myskills:route <intent>` | Find the best skill for an intent |
+| `/myskills:search <query>` | Search skills with ranking |
+| `/myskills:list` | Browse skills by category |
+
+### For npm/JavaScript Projects
+
+> **Note**: Not yet published to npm. Use Git installation:
 
 ```bash
-# Install from GitHub
-npm install github:mingyouagi/myskills#main:skills/skill-router
-
-# Or clone locally
 cd ~/.claude/skills
 git clone https://github.com/mingyouagi/myskills.git
 ```
@@ -109,10 +129,16 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 
 ```
 myskills/
+├── .claude/             # Claude Code configuration
+│   ├── settings.json    # Plugin settings
+│   └── INSTALL.md       # Installation guide
+├── commands/            # Claude Code commands
+│   ├── route.md         # /myskills:route
+│   ├── search.md        # /myskills:search
+│   └── list.md          # /myskills:list
 ├── skills/              # All skills
 │   ├── skill-router/    # Intelligent routing
-│   ├── skill-*/         # Future skills
-│   └── ...
+│   └── skill-*/         # Future skills
 ├── README.md            # This file
 ├── LICENSE              # MIT License
 └── CONTRIBUTING.md      # Contribution guide
@@ -150,8 +176,8 @@ Individual skills may have additional licensing terms (see their respective dire
 
 ## Acknowledgments
 
-- Inspired by [Claude Code](https://github.com/claude-code-ai) and [Superpowers](https://github.com/superpowers)
-- Built for the AI agent ecosystem
+- Inspired by [Superpowers](https://github.com/obra/superpowers) - the excellent agentic skills framework
+- Built for the Claude Code and AI agent ecosystem
 - Community contributions welcome!
 
 ---
