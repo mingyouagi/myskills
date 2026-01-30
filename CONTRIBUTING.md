@@ -41,7 +41,7 @@ Documentation improvements are always welcome:
 
 ```bash
 # Clone the repo
-git clone https://github.com/YOUR_USERNAME/myskills.git
+git clone https://github.com/mingyouagi/myskills.git
 cd myskills
 
 # Install dependencies for a specific skill

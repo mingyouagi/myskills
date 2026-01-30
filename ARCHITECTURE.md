@@ -136,7 +136,7 @@ import { skillRouter } from 'myskills/skill-router';
 ```bash
 # Clone repo to skills directory
 cd ~/.claude/skills
-git clone https://github.com/YOUR_USERNAME/myskills.git
+git clone https://github.com/mingyouagi/myskills.git
 
 # Use any skill
 use_skill("myskills/skill-router")
@@ -157,7 +157,7 @@ import { routeSkill } from 'skill-router';
 For other projects that want to include skills:
 
 ```bash
-git submodule add https://github.com/YOUR_USERNAME/myskills.git .skills
+git submodule add https://github.com/mingyouagi/myskills.git .skills
 ```
 
 ## Development Workflow

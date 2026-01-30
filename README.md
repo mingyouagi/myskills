@@ -36,7 +36,7 @@ Clone this repo to your Claude Code skills directory:
 
 ```bash
 cd ~/.claude/skills
-git clone https://github.com/YOUR_USERNAME/myskills.git
+git clone https://github.com/mingyouagi/myskills.git
 ```
 
 Then use any skill via:
@@ -141,7 +141,7 @@ Individual skills may have additional licensing terms (see their respective dire
 
 ## Author
 
-**TODO**: Your Name ([@yourhandle](https://twitter.com/yourhandle))
+**mingyouagi** ([@mingyouagi](https://github.com/mingyouagi))
 
 ## Acknowledgments
 

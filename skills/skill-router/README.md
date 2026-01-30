@@ -5,7 +5,7 @@
 [![Tests](https://img.shields.io/badge/tests-40%2F40%20passing-brightgreen)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-Part of [myskills](https://github.com/YOUR_USERNAME/myskills) collection.
+Part of [myskills](https://github.com/mingyouagi/myskills) collection.
 
 ## Quick Start
 
@@ -132,6 +132,6 @@ MIT - See [LICENSE](./LICENSE)
 
 ## Links
 
-- [Main Repository](https://github.com/YOUR_USERNAME/myskills)
-- [Report Issues](https://github.com/YOUR_USERNAME/myskills/issues)
+- [Main Repository](https://github.com/mingyouagi/myskills)
+- [Report Issues](https://github.com/mingyouagi/myskills/issues)
 - [npm Package](https://www.npmjs.com/package/skill-router) *(coming soon)*

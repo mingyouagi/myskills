@@ -28,16 +28,17 @@
     "llm",
     "tool-router"
   ],
-  "author": "TODO: Your Name <your@email.com>",
+  "author": "mingyouagi <mingyouagi@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "TODO: https://github.com/YOUR_USERNAME/skill-router.git"
+    "url": "https://github.com/mingyouagi/myskills.git",
+    "directory": "skills/skill-router"
   },
   "bugs": {
-    "url": "TODO: https://github.com/YOUR_USERNAME/skill-router/issues"
+    "url": "https://github.com/mingyouagi/myskills/issues"
   },
-  "homepage": "TODO: https://github.com/YOUR_USERNAME/skill-router#readme",
+  "homepage": "https://github.com/mingyouagi/myskills/tree/main/skills/skill-router#readme",
   "engines": {
     "node": ">=16.0.0"
   },
