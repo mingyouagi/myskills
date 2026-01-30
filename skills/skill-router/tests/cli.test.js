@@ -65,13 +65,13 @@ describe('CLI', () => {
     it('should return no results for unknown query', async () => {
       const { code, stdout } = await runCli(['search', 'xyznonexistent123']);
       expect(code).toBe(0);
-      expect(stdout).toContain('没有找到匹配的技能');
+      expect(stdout).toContain('No matching skills found');
     });
 
     it('should error without query', async () => {
       const { code, stderr } = await runCli(['search']);
       expect(code).toBe(1);
-      expect(stderr).toContain('请提供搜索关键词');
+      expect(stderr).toContain('Please provide a search query');
     });
 
     it('should support --limit option', async () => {
@@ -90,13 +90,13 @@ describe('CLI', () => {
     it('should error on invalid limit', async () => {
       const { code, stderr } = await runCli(['search', 'skill', '--limit', 'abc']);
       expect(code).toBe(1);
-      expect(stderr).toContain('--limit 必须是正整数');
+      expect(stderr).toContain('--limit must be a positive integer');
     });
 
     it('should error on negative limit', async () => {
       const { code, stderr } = await runCli(['search', 'skill', '--limit', '-1']);
       expect(code).toBe(1);
-      expect(stderr).toContain('--limit 必须是正整数');
+      expect(stderr).toContain('--limit must be a positive integer');
     });
 
     it('should support --json output', async () => {
@@ -111,20 +111,20 @@ describe('CLI', () => {
     it('should route to best skill', async () => {
       const { code, stdout } = await runCli(['route', 'find a skill']);
       expect(code).toBe(0);
-      expect(stdout).toContain('推荐技能');
-      expect(stdout).toContain('置信度');
+      expect(stdout).toContain('Recommended skill');
+      expect(stdout).toContain('Confidence');
     });
 
     it('should return no match for unknown intent', async () => {
       const { code, stdout } = await runCli(['route', 'xyznonexistent123']);
       expect(code).toBe(0);
-      expect(stdout).toContain('没有找到匹配的技能');
+      expect(stdout).toContain('No matching skills found');
     });
 
     it('should error without intent', async () => {
       const { code, stderr } = await runCli(['route']);
       expect(code).toBe(1);
-      expect(stderr).toContain('请提供意图描述');
+      expect(stderr).toContain('Please provide an intent description');
     });
 
     it('should support --json output', async () => {
@@ -140,7 +140,7 @@ describe('CLI', () => {
       const { code, stdout } = await runCli(['list']);
       expect(code).toBe(0);
       expect(stdout).toContain('[');
-      expect(stdout).toContain('个技能');
+      expect(stdout).toContain('skills');
     });
 
     it('should support --json output', async () => {
@@ -155,21 +155,21 @@ describe('CLI', () => {
     it('should show skill details', async () => {
       const { code, stdout } = await runCli(['detail', 'skill-router']);
       expect(code).toBe(0);
-      expect(stdout).toContain('名称:');
+      expect(stdout).toContain('Name:');
       expect(stdout).toContain('ID:');
-      expect(stdout).toContain('路径:');
+      expect(stdout).toContain('Path:');
     });
 
     it('should return not found for unknown skill', async () => {
       const { code, stdout } = await runCli(['detail', 'nonexistent-skill']);
       expect(code).toBe(0);
-      expect(stdout).toContain('技能不存在');
+      expect(stdout).toContain('Skill not found');
     });
 
     it('should error without skill id', async () => {
       const { code, stderr } = await runCli(['detail']);
       expect(code).toBe(1);
-      expect(stderr).toContain('请提供技能 ID');
+      expect(stderr).toContain('Please provide a skill ID');
     });
 
     it('should support --json output', async () => {
@@ -184,7 +184,7 @@ describe('CLI', () => {
     it('should error on unknown command', async () => {
       const { code, stderr } = await runCli(['unknown']);
       expect(code).toBe(1);
-      expect(stderr).toContain('未知命令');
+      expect(stderr).toContain('Unknown command');
     });
   });
 
@@ -197,6 +197,20 @@ describe('CLI', () => {
     it('should accept -p shorthand', async () => {
       const { code } = await runCli(['list', '-p', './nonexistent']);
       expect(code).toBe(0);
+    });
+  });
+
+  describe('--lang option', () => {
+    it('should support Chinese output', async () => {
+      const { code, stdout } = await runCli(['list', '--lang', 'zh']);
+      expect(code).toBe(0);
+      expect(stdout).toContain('个技能');
+    });
+
+    it('should support English output', async () => {
+      const { code, stdout } = await runCli(['list', '--lang', 'en']);
+      expect(code).toBe(0);
+      expect(stdout).toContain('skills');
     });
   });
 });

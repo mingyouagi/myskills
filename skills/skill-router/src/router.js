@@ -12,7 +12,33 @@ import {
 
 const homeDir = os.homedir();
 
+// Find the latest superpowers version
+function findSuperpowersPath() {
+  const basePath = path.join(homeDir, '.claude/plugins/cache/claude-plugins-official/superpowers');
+  if (!fs.existsSync(basePath)) return null;
+
+  try {
+    const versions = fs.readdirSync(basePath)
+      .filter(v => /^\d+\.\d+\.\d+$/.test(v))
+      .sort((a, b) => {
+        const [aMajor, aMinor, aPatch] = a.split('.').map(Number);
+        const [bMajor, bMinor, bPatch] = b.split('.').map(Number);
+        return bMajor - aMajor || bMinor - aMinor || bPatch - aPatch;
+      });
+
+    if (versions.length > 0) {
+      return path.join(basePath, versions[0], 'skills');
+    }
+  } catch {
+    // Ignore errors
+  }
+  return null;
+}
+
+const superpowersPath = findSuperpowersPath();
+
 const DEFAULT_SKILL_DIRS = [
+  ...(superpowersPath ? [{ basePath: superpowersPath, namespace: 'superpowers' }] : []),
   { basePath: path.join(homeDir, '.claude/superpowers/skills'), namespace: 'superpowers' },
   { basePath: path.join(homeDir, '.claude/skills'), namespace: null }
 ];
