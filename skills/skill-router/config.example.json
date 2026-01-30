@@ -1,0 +1,24 @@
+/**
+ * Skill Router Configuration
+ *
+ * Place this file at:
+ * - ~/.config/skill-router/config.json (global)
+ * - ./.skill-router.json (project)
+ */
+{
+  // Preset configurations for different AI tools
+  // Use "preset" to quickly configure for a specific tool
+  // Options: "claude-code", "codex", "opencode", "custom"
+  "preset": "claude-code",
+
+  // Custom skill directories (used when preset is "custom" or to add extra dirs)
+  // Each entry: { "path": "...", "namespace": "..." }
+  "skillDirs": [],
+
+  // Plugin cache directories to scan for skills
+  // Each entry: { "path": "...", "pattern": "*/skills" }
+  "pluginCacheDirs": [],
+
+  // Default language for CLI output: "en" or "zh"
+  "language": "en"
+}

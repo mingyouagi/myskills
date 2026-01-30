@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-import { searchSkills, routeSkill, listCategories, getSkillDetails } from './router.js';
+import { searchSkills, routeSkill, listCategories, getSkillDetails, getConfig } from './router.js';
+import { getPresets } from './config.js';
 
 const args = process.argv.slice(2);
 const command = args[0];
@@ -98,6 +99,7 @@ ${t.commands}:
   route <intent>       ${t.routeDesc}
   list                 ${t.listDesc}
   detail <skill-id>    ${t.detailDesc}
+  config               Show current configuration
 
 ${t.options}:
   --limit, -l <n>      ${t.limitDesc}
@@ -105,9 +107,12 @@ ${t.options}:
   --json               ${t.jsonDesc}
   --lang <zh|en>       ${t.langDesc}
 
-${t.defaultPaths}:
-  ~/.claude/superpowers/skills
-  ~/.claude/skills
+Config files (in priority order):
+  ./.skill-router.json              (project)
+  ~/.config/skill-router/config.json (user)
+  ~/.skill-router.json              (user home)
+
+Presets: claude-code, codex, opencode, all
 
 ${t.examples}:
   skill-router search "debug"
@@ -249,6 +254,27 @@ async function main() {
         console.log(`${t.path}: ${detail.path}`);
       } else {
         console.log(t.skillNotFound);
+      }
+      break;
+    }
+
+    case 'config': {
+      const config = getConfig();
+      if (options.json) {
+        console.log(JSON.stringify(config, null, 2));
+      } else {
+        console.log('Current Configuration:');
+        console.log(`  Preset: ${config.preset}`);
+        console.log(`  Language: ${config.language}`);
+        console.log('\nSkill Directories:');
+        for (const dir of config.skillDirs) {
+          console.log(`  - ${dir.path} (namespace: ${dir.namespace || 'none'})`);
+        }
+        console.log('\nPlugin Cache Directories:');
+        for (const dir of config.pluginCacheDirs) {
+          console.log(`  - ${dir.path}`);
+        }
+        console.log('\nAvailable Presets:', getPresets().join(', '));
       }
       break;
     }

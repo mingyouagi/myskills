@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import os from 'os';
 import * as skillIndex from './indexer.js';
 import { createWatcher } from './watcher.js';
 import {
@@ -9,53 +8,7 @@ import {
   listCategoriesFromIndex,
   getSkillDetailsFromIndex
 } from './core.js';
-
-const homeDir = os.homedir();
-
-// Find skills in plugin cache (all plugins, not just superpowers)
-function findPluginSkillPaths() {
-  const pluginCachePath = path.join(homeDir, '.claude/plugins/cache/claude-plugins-official');
-  const paths = [];
-
-  if (!fs.existsSync(pluginCachePath)) return paths;
-
-  try {
-    const plugins = fs.readdirSync(pluginCachePath);
-
-    for (const plugin of plugins) {
-      const pluginPath = path.join(pluginCachePath, plugin);
-      const stat = fs.statSync(pluginPath);
-      if (!stat.isDirectory()) continue;
-
-      // Find latest version
-      const versions = fs.readdirSync(pluginPath)
-        .filter(v => /^\d+\.\d+\.\d+$/.test(v))
-        .sort((a, b) => {
-          const [aMajor, aMinor, aPatch] = a.split('.').map(Number);
-          const [bMajor, bMinor, bPatch] = b.split('.').map(Number);
-          return bMajor - aMajor || bMinor - aMinor || bPatch - aPatch;
-        });
-
-      if (versions.length > 0) {
-        const skillsPath = path.join(pluginPath, versions[0], 'skills');
-        if (fs.existsSync(skillsPath)) {
-          paths.push({ basePath: skillsPath, namespace: plugin });
-        }
-      }
-    }
-  } catch {
-    // Ignore errors
-  }
-
-  return paths;
-}
-
-const pluginSkillPaths = findPluginSkillPaths();
-
-const DEFAULT_SKILL_DIRS = [
-  ...pluginSkillPaths,
-  { basePath: path.join(homeDir, '.claude/skills'), namespace: null }
-];
+import { getSkillDirs, getConfig, invalidateConfigCache } from './config.js';
 
 let cachedIndex = null;
 let indexBuildTime = null;
@@ -69,13 +22,17 @@ function invalidateCache() {
   indexVersion++;
 }
 
+function getDefaultSkillDirs() {
+  return getSkillDirs();
+}
+
 function getIndex(projectSkillsDir = null) {
   const now = Date.now();
   if (cachedIndex && indexBuildTime && (now - indexBuildTime) < INDEX_TTL_MS) {
     return cachedIndex;
   }
 
-  const skillDirs = [...DEFAULT_SKILL_DIRS];
+  const skillDirs = [...getDefaultSkillDirs()];
   if (projectSkillsDir && fs.existsSync(projectSkillsDir)) {
     skillDirs.unshift({ basePath: projectSkillsDir, namespace: 'project' });
   }
@@ -91,7 +48,7 @@ function startWatching(options = {}) {
     return activeWatcher;
   }
 
-  const skillDirs = [...DEFAULT_SKILL_DIRS];
+  const skillDirs = [...getDefaultSkillDirs()];
   if (options.projectSkillsDir && fs.existsSync(options.projectSkillsDir)) {
     skillDirs.unshift({ basePath: options.projectSkillsDir, namespace: 'project' });
   }
@@ -161,7 +118,9 @@ export {
   getSkillDetails,
   getIndex,
   invalidateCache,
+  invalidateConfigCache,
   startWatching,
   stopWatching,
-  getIndexVersion
+  getIndexVersion,
+  getConfig
 };

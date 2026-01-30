@@ -30,3 +30,12 @@ export {
   listCategoriesFromIndex,
   getSkillDetailsFromIndex
 } from './core.js';
+
+// Configuration
+export {
+  getConfig,
+  getSkillDirs,
+  getPresets,
+  getPreset,
+  invalidateConfigCache
+} from './config.js';
