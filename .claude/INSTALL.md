@@ -15,6 +15,9 @@ git clone https://github.com/mingyouagi/myskills.git
 # Install dependencies for skill-router
 cd myskills/skills/skill-router
 npm install
+
+# Create symlink so Claude Code can discover skill-router
+ln -s ~/.claude/skills/myskills/skills/skill-router ~/.claude/skills/skill-router
 ```
 
 ## Verify Installation
@@ -22,7 +25,7 @@ npm install
 Check that the skill files exist:
 
 ```bash
-ls ~/.claude/skills/myskills/skills/skill-router/SKILL.md
+ls ~/.claude/skills/skill-router/SKILL.md
 ```
 
 ## Usage
