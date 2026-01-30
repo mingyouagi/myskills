@@ -18,17 +18,14 @@ const PRESETS = {
     skillDirs: [
       { path: path.join(homeDir, '.codex/skills'), namespace: null }
     ],
-    pluginCacheDirs: [
-      { path: path.join(homeDir, '.codex/plugins'), pattern: '*/skills' }
-    ]
+    pluginCacheDirs: []  // Codex doesn't have plugin cache
   },
   'opencode': {
     skillDirs: [
-      { path: path.join(homeDir, '.opencode/skills'), namespace: null }
+      { path: path.join(homeDir, '.opencode/skills'), namespace: null },
+      { path: path.join(homeDir, '.opencode/plugins'), namespace: 'plugins' }
     ],
-    pluginCacheDirs: [
-      { path: path.join(homeDir, '.opencode/plugins'), pattern: '*/skills' }
-    ]
+    pluginCacheDirs: []
   },
   'all': {
     skillDirs: [
@@ -37,10 +34,12 @@ const PRESETS = {
       { path: path.join(homeDir, '.opencode/skills'), namespace: null }
     ],
     pluginCacheDirs: [
-      { path: path.join(homeDir, '.claude/plugins/cache/claude-plugins-official'), pattern: '*/skills' },
-      { path: path.join(homeDir, '.codex/plugins'), pattern: '*/skills' },
-      { path: path.join(homeDir, '.opencode/plugins'), pattern: '*/skills' }
+      { path: path.join(homeDir, '.claude/plugins/cache/claude-plugins-official'), pattern: '*/skills' }
     ]
+  },
+  'custom': {
+    skillDirs: [],
+    pluginCacheDirs: []
   }
 };
 

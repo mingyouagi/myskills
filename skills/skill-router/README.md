@@ -13,13 +13,41 @@ Part of [myskills](https://github.com/mingyouagi/myskills) collection.
 
 ```bash
 # Clone the repository
-cd ~/.claude/skills
 git clone https://github.com/mingyouagi/myskills.git
-
-# Install and link CLI globally
 cd myskills/skills/skill-router
+
+# Run install script (installs CLI + creates symlinks)
+./install.sh
+
+# Or manual installation:
 npm install
 npm link
+```
+
+### Supported Tools
+
+| Tool | Status | Skills Directory |
+|------|--------|------------------|
+| Claude Code | ✅ Full | `~/.claude/skills/` + plugins cache |
+| Codex | ✅ Full | `~/.codex/skills/` |
+| OpenCode | ✅ Full | `~/.opencode/skills/` |
+
+### Configuration
+
+Create `~/.skill-router.json` to customize:
+
+```json
+{
+  "preset": "claude-code",
+  "language": "en"
+}
+```
+
+Available presets: `claude-code`, `codex`, `opencode`, `all`, `custom`
+
+```bash
+# View current configuration
+skill-router config
 ```
 
 ### CLI Usage (Recommended)
