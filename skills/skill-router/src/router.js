@@ -12,34 +12,48 @@ import {
 
 const homeDir = os.homedir();
 
-// Find the latest superpowers version
-function findSuperpowersPath() {
-  const basePath = path.join(homeDir, '.claude/plugins/cache/claude-plugins-official/superpowers');
-  if (!fs.existsSync(basePath)) return null;
+// Find skills in plugin cache (all plugins, not just superpowers)
+function findPluginSkillPaths() {
+  const pluginCachePath = path.join(homeDir, '.claude/plugins/cache/claude-plugins-official');
+  const paths = [];
+
+  if (!fs.existsSync(pluginCachePath)) return paths;
 
   try {
-    const versions = fs.readdirSync(basePath)
-      .filter(v => /^\d+\.\d+\.\d+$/.test(v))
-      .sort((a, b) => {
-        const [aMajor, aMinor, aPatch] = a.split('.').map(Number);
-        const [bMajor, bMinor, bPatch] = b.split('.').map(Number);
-        return bMajor - aMajor || bMinor - aMinor || bPatch - aPatch;
-      });
+    const plugins = fs.readdirSync(pluginCachePath);
 
-    if (versions.length > 0) {
-      return path.join(basePath, versions[0], 'skills');
+    for (const plugin of plugins) {
+      const pluginPath = path.join(pluginCachePath, plugin);
+      const stat = fs.statSync(pluginPath);
+      if (!stat.isDirectory()) continue;
+
+      // Find latest version
+      const versions = fs.readdirSync(pluginPath)
+        .filter(v => /^\d+\.\d+\.\d+$/.test(v))
+        .sort((a, b) => {
+          const [aMajor, aMinor, aPatch] = a.split('.').map(Number);
+          const [bMajor, bMinor, bPatch] = b.split('.').map(Number);
+          return bMajor - aMajor || bMinor - aMinor || bPatch - aPatch;
+        });
+
+      if (versions.length > 0) {
+        const skillsPath = path.join(pluginPath, versions[0], 'skills');
+        if (fs.existsSync(skillsPath)) {
+          paths.push({ basePath: skillsPath, namespace: plugin });
+        }
+      }
     }
   } catch {
     // Ignore errors
   }
-  return null;
+
+  return paths;
 }
 
-const superpowersPath = findSuperpowersPath();
+const pluginSkillPaths = findPluginSkillPaths();
 
 const DEFAULT_SKILL_DIRS = [
-  ...(superpowersPath ? [{ basePath: superpowersPath, namespace: 'superpowers' }] : []),
-  { basePath: path.join(homeDir, '.claude/superpowers/skills'), namespace: 'superpowers' },
+  ...pluginSkillPaths,
   { basePath: path.join(homeDir, '.claude/skills'), namespace: null }
 ];
 
