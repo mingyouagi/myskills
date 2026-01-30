@@ -24,7 +24,11 @@ skill-router/
 ├── LICENSE                 # MIT License
 ├── CONTRIBUTING.md         # Contribution guidelines
 ├── OPENSOURCE-CHECKLIST.md # Release checklist (optional)
-├── DIRECTORY_STRUCTURE.md  # This file
+├── docs/
+│   ├── README.md                # Documentation index
+│   ├── api-reference.md         # Complete API documentation
+│   ├── contributing.md          # Contribution guidelines
+│   └── directory-structure.md   # This file
 ├── package.json            # npm package configuration
 └── .gitignore              # Git ignore rules
 ```

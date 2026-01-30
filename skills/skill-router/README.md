@@ -97,10 +97,11 @@ search_skills("debug", limit=5)
 
 ## Documentation
 
-- [SKILL.md](./SKILL.md) - Detailed guide with algorithms and patterns
-- [Examples](./examples/) - Working code examples
-- [Tests](./tests/) - Test suite as documentation
-- [API Reference](./README-FULL.md) - Complete API documentation
+- [📖 Complete Documentation](./docs/) - Full documentation index
+- [🎯 SKILL.md](./SKILL.md) - Detailed guide for AI agents
+- [🔧 API Reference](./docs/api-reference.md) - Complete API documentation
+- [💻 Examples](./examples/) - Working code examples
+- [✅ Tests](./tests/) - Test suite as documentation
 
 ## Development
 

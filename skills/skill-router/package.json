@@ -52,6 +52,7 @@
   },
   "files": [
     "src/",
+    "docs/",
     "README.md",
     "LICENSE",
     "SKILL.md"

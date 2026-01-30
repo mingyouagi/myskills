@@ -24,7 +24,7 @@ routeSkill("debug failing test")
 **Version**: 0.1.0  
 **Tests**: 40/40 passing
 
-[📖 Full Documentation](./skills/skill-router/README.md)
+[📖 Full Documentation](./skills/skill-router/docs/)
 
 ---
 
