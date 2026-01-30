@@ -5,9 +5,8 @@
 Run these commands in your terminal:
 
 ```bash
-# Create directories
+# Create skills directory if it doesn't exist
 mkdir -p ~/.claude/skills
-mkdir -p ~/.claude/plugin
 
 # Clone myskills
 cd ~/.claude/skills
@@ -17,36 +16,17 @@ git clone https://github.com/mingyouagi/myskills.git
 cd myskills/skills/skill-router
 npm install
 
-# Create symlinks for skill discovery
+# Create symlink so Claude Code can discover skill-router
 ln -sf ~/.claude/skills/myskills/skills/skill-router ~/.claude/skills/skill-router
-
-# Register plugin (enables route_skill, search_skills tools)
-ln -sf ~/.claude/skills/myskills/.claude/plugin/skill-router.js ~/.claude/plugin/skill-router.js
 ```
 
 ## Verify Installation
 
+Check that the skill files exist:
+
 ```bash
-# Check skill files
 ls ~/.claude/skills/skill-router/SKILL.md
-
-# Check plugin registration
-ls ~/.claude/plugin/skill-router.js
 ```
-
-## Restart Claude Code
-
-After installation, restart Claude Code to load the new plugin.
-
-## Available Tools
-
-Once installed, you can use these tools:
-
-| Tool | Description |
-|------|-------------|
-| `route_skill` | Find the best skill for an intent |
-| `search_skills` | Search skills with ranking |
-| `list_skill_categories` | Browse all categories |
 
 ## Usage
 
@@ -74,4 +54,5 @@ git pull
 
 ```bash
 rm -rf ~/.claude/skills/myskills
+rm ~/.claude/skills/skill-router
 ```
