@@ -21,3 +21,12 @@ export {
   SkillWatcher,
   createWatcher
 } from './watcher.js';
+
+// Core functions for custom implementations
+export {
+  scoreSkill,
+  searchSkillsWithIndex,
+  routeSkillWithIndex,
+  listCategoriesFromIndex,
+  getSkillDetailsFromIndex
+} from './core.js';
