@@ -90,7 +90,7 @@ Each skill published separately:
 ```bash
 cd skills/skill-router
 npm publish
-# → npm install skill-router
+# → npm install skill-router (once published)
 ```
 
 **Pros**: 
@@ -127,7 +127,7 @@ import { skillRouter } from 'myskills/skill-router';
 
 - Publish popular skills independently to npm
 - Keep experimental skills in repo only
-- Users can `git clone` or `npm install skill-router`
+- Users can `git clone` or `npm install skill-router` (when published)
 
 ## Usage Patterns
 
@@ -145,9 +145,10 @@ use_skill("myskills/skill-router")
 ### As npm Packages
 
 ```bash
-# Install specific skill
+# Install specific skill (once published to npm)
 npm install skill-router
 
+# For now, use local path or git clone
 # Use in code
 import { routeSkill } from 'skill-router';
 ```

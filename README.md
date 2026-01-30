@@ -24,7 +24,7 @@ routeSkill("debug failing test")
 **Version**: 0.1.0  
 **Tests**: 40/40 passing
 
-[📖 Full Documentation](./skills/skill-router/README.md) | [📦 npm Package](https://www.npmjs.com/package/skill-router) *(coming soon)*
+[📖 Full Documentation](./skills/skill-router/README.md)
 
 ---
 
@@ -46,10 +46,15 @@ use_skill("myskills/skill-router")
 
 ### As npm Packages
 
-Each skill can also be installed independently:
+> **Note**: Skills are not yet published to npm. For now, use Git installation or local development.
 
 ```bash
-npm install skill-router
+# Install from GitHub
+npm install github:mingyouagi/myskills#main:skills/skill-router
+
+# Or clone locally
+cd ~/.claude/skills
+git clone https://github.com/mingyouagi/myskills.git
 ```
 
 ## Usage

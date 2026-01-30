@@ -9,8 +9,15 @@ Part of [myskills](https://github.com/mingyouagi/myskills) collection.
 
 ## Quick Start
 
+> **Note**: Not yet published to npm. Use Git installation:
+
 ```bash
-npm install skill-router
+# Install from GitHub (when available)
+# npm install skill-router
+
+# For now, clone the repository:
+cd ~/.claude/skills
+git clone https://github.com/mingyouagi/myskills.git
 ```
 
 ```javascript
@@ -134,4 +141,3 @@ MIT - See [LICENSE](./LICENSE)
 
 - [Main Repository](https://github.com/mingyouagi/myskills)
 - [Report Issues](https://github.com/mingyouagi/myskills/issues)
-- [npm Package](https://www.npmjs.com/package/skill-router) *(coming soon)*

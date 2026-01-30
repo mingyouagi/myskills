@@ -39,7 +39,10 @@ route_skill("debug failing test") → systematic-debugging (95% confidence)
 ### Installation
 
 ```bash
-npm install skill-router  # or yarn add skill-router
+# Not yet published to npm
+# For now, clone the repository:
+cd ~/.claude/skills
+git clone https://github.com/mingyouagi/myskills.git
 ```
 
 ### Basic Usage
