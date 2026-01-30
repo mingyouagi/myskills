@@ -1,223 +1,138 @@
 # My Skills
 
-> A collection of intelligent skills for AI agents
+> Intelligent skills for AI coding agents
 
-This repository contains custom skills designed to enhance AI agents' capabilities, particularly for the Claude Code ecosystem.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
+## Quick Start
+
+```bash
+# One-line install (Claude Code)
+cd ~/.claude/skills && git clone https://github.com/mingyouagi/myskills.git && cd myskills/skills/skill-router && ./install.sh
+
+# Use it
+skill-router search "debug"
+skill-router route "fix a bug"
+```
 
 ## Available Skills
 
-### 🧭 [skill-router](./skills/skill-router)
+| Skill | Description | Status |
+|-------|-------------|--------|
+| [skill-router](./skills/skill-router) | Intent-based skill discovery and routing | ✅ Ready |
 
-Intelligent skill discovery and routing for agents with large skill libraries.
+### skill-router
 
-**Problem**: When agents have 10+ skills, finding the right one wastes tokens and time.
+When agents have 10+ skills, finding the right one wastes tokens. skill-router solves this with semantic search and intent-based routing.
 
-**Solution**: Intent-based routing with semantic search, auto-discovery, and 96% token savings.
+```bash
+skill-router route "debug failing test"
+# → systematic-debugging (95% confidence)
 
-```javascript
-import { routeSkill } from 'skill-router';
-routeSkill("debug failing test") 
-// → systematic-debugging (95% confidence)
+skill-router search "create feature"
+# → brainstorming, writing-plans, test-driven-development
 ```
 
-**Status**: ✅ Ready for use  
-**Version**: 0.1.0  
-**Tests**: 40/40 passing
-
-[📖 Full Documentation](./skills/skill-router/docs/)
-
----
+**Token savings**: 96% reduction (2000 → 50 tokens)
 
 ## Installation
 
-### For Claude Code
+### Supported Platforms
 
-**Quick Install** - Tell Claude:
+| Platform | Skills Directory |
+|----------|------------------|
+| Claude Code | `~/.claude/skills/` |
+| Codex | `~/.codex/skills/` |
+| OpenCode | `~/.opencode/skills/` |
 
-```
-Fetch and follow instructions from https://raw.githubusercontent.com/mingyouagi/myskills/main/.claude/INSTALL.md
-```
-
-**Manual Install**:
+### Install Script (Recommended)
 
 ```bash
-# Create skills directory
-mkdir -p ~/.claude/skills
-
-# Clone myskills
-cd ~/.claude/skills
+# Replace <SKILLS_DIR> with your platform's directory
+cd <SKILLS_DIR>
 git clone https://github.com/mingyouagi/myskills.git
-
-# Install dependencies
 cd myskills/skills/skill-router
-npm install
-
-# Create symlink so Claude Code can discover skill-router
-ln -sf ~/.claude/skills/myskills/skills/skill-router ~/.claude/skills/skill-router
+./install.sh
 ```
 
-**Verify Installation**:
+### Manual Install
+
 ```bash
-ls ~/.claude/skills/skill-router/SKILL.md
+cd <SKILLS_DIR>
+git clone https://github.com/mingyouagi/myskills.git
+cd myskills/skills/skill-router
+npm install && npm link
+ln -sf "$(pwd)" <SKILLS_DIR>/skill-router
 ```
 
-### Available Commands
+### Verify
 
-Once installed, you can use these CLI commands:
+```bash
+skill-router list
+```
+
+## CLI Commands
 
 | Command | Description |
 |---------|-------------|
-| `skill-router route <intent>` | Find the best skill for an intent |
-| `skill-router search <query>` | Search skills with ranking |
-| `skill-router list` | Browse skills by category |
+| `skill-router route <intent>` | Auto-route to best skill |
+| `skill-router search <query>` | Search with ranking |
+| `skill-router list` | List by category |
 | `skill-router detail <id>` | Show skill details |
-| `skill-router config` | Show current configuration |
+| `skill-router config` | Show configuration |
 
-### For Codex
+## For Developers
 
-```bash
-# Create skills directory
-mkdir -p ~/.codex/skills
+### Programmatic API
 
-# Clone myskills
-cd ~/.codex/skills
-git clone https://github.com/mingyouagi/myskills.git
+```javascript
+import { routeSkill, searchSkills } from 'skill-router';
 
-# Install dependencies
-cd myskills/skills/skill-router
-npm install && npm link
+const best = routeSkill("debug failing test");
+// → { skill: { id: "systematic-debugging" }, confidence: 0.95 }
 
-# Create symlink
-ln -sf ~/.codex/skills/myskills/skills/skill-router ~/.codex/skills/skill-router
+const results = searchSkills("create feature", { limit: 3 });
 ```
 
-### For OpenCode
+### Skill Frontmatter
 
-```bash
-# Create skills directory
-mkdir -p ~/.opencode/skills
-
-# Clone myskills
-cd ~/.opencode/skills
-git clone https://github.com/mingyouagi/myskills.git
-
-# Install dependencies
-cd myskills/skills/skill-router
-npm install && npm link
-
-# Create symlink
-ln -sf ~/.opencode/skills/myskills/skills/skill-router ~/.opencode/skills/skill-router
-```
-
-### For npm/JavaScript Projects
-
-> **Note**: Not yet published to npm. Use Git installation:
-
-```bash
-git clone https://github.com/mingyouagi/myskills.git
-cd myskills/skills/skill-router
-npm install && npm link
-```
-
-## Usage
-
-### For AI Agents
-
-Skills in this repo include frontmatter metadata for discoverability:
+Skills use YAML frontmatter for discoverability:
 
 ```yaml
 ---
-name: skill-router
-description: Use when facing many skills and unsure which to choose
-triggers: [find skill, which skill, search skills]
+name: my-skill
+description: Use when doing X
+category: technique
+triggers: [keyword1, keyword2]
 ---
 ```
 
-Agents can use the `find_skills` tool or `skill-router` itself to discover appropriate skills.
-
-### For Developers
-
-Each skill is a standalone npm package with full TypeScript/JavaScript API:
-
-```javascript
-import { searchSkills, routeSkill } from 'skill-router';
-```
-
-See individual skill READMEs for detailed usage.
-
-## Roadmap
-
-### Current Skills
-- ✅ **skill-router** - Intelligent skill discovery and routing
-
-### Planned Skills
-- 🔜 **skill-composer** - Combine multiple skills into workflows
-- 🔜 **skill-analyzer** - Analyze skill usage patterns and suggest optimizations
-- 💡 **Your idea here** - [Suggest a skill](../../issues/new)
-
-## Contributing
-
-Contributions welcome! Whether you want to:
-- 🐛 Report bugs
-- 💡 Suggest new skills
-- 🔧 Improve existing skills
-- 📖 Enhance documentation
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
-
-## Development
-
-### Repository Structure
+## Project Structure
 
 ```
 myskills/
-├── .claude/             # Claude Code configuration
-│   ├── settings.json    # Plugin settings
-│   └── INSTALL.md       # Installation guide
-├── skills/              # All skills
-│   ├── skill-router/    # Intelligent routing
-│   └── skill-*/         # Future skills
-├── README.md            # This file
-├── LICENSE              # MIT License
-└── CONTRIBUTING.md      # Contribution guide
+├── skills/
+│   └── skill-router/    # Intelligent routing
+├── .claude/             # Claude Code config
+└── README.md
 ```
 
-### Adding a New Skill
+## Roadmap
 
-1. Create a directory: `skills/your-skill-name/`
-2. Add `SKILL.md` with frontmatter
-3. Implement your skill
-4. Add tests
-5. Update this README
-6. Submit PR
+- ✅ skill-router - Intelligent discovery and routing
+- 🔜 skill-composer - Combine skills into workflows
+- 🔜 skill-analyzer - Usage patterns and optimization
 
-See [skill-router](./skills/skill-router) as a reference implementation.
+## Contributing
 
-## Philosophy
-
-**Skills should be:**
-- 🎯 **Focused**: One clear purpose
-- 🧪 **Tested**: Comprehensive test coverage
-- 📚 **Documented**: Clear usage examples
-- 🔄 **Composable**: Work well with other skills
-- 🚀 **Performant**: Minimize token usage
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 
 ## License
 
-MIT License - see [LICENSE](./LICENSE)
+MIT - see [LICENSE](./LICENSE)
 
-Individual skills may have additional licensing terms (see their respective directories).
+## Links
 
-## Author
-
-**mingyouagi** ([@mingyouagi](https://github.com/mingyouagi))
-
-## Acknowledgments
-
-- Inspired by [Superpowers](https://github.com/obra/superpowers) - the excellent agentic skills framework
-- Built for the Claude Code and AI agent ecosystem
-- Community contributions welcome!
-
----
-
-**Star ⭐ this repo if you find these skills useful!**
+- [skill-router docs](./skills/skill-router/docs/)
+- [Report issues](https://github.com/mingyouagi/myskills/issues)
+- Inspired by [Superpowers](https://github.com/obra/superpowers)
