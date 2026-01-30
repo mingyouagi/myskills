@@ -63,21 +63,60 @@ ls ~/.claude/skills/skill-router/SKILL.md
 
 ### Available Commands
 
-Once installed, you can use these commands in Claude Code:
+Once installed, you can use these CLI commands:
 
 | Command | Description |
 |---------|-------------|
-| `/myskills:route <intent>` | Find the best skill for an intent |
-| `/myskills:search <query>` | Search skills with ranking |
-| `/myskills:list` | Browse skills by category |
+| `skill-router route <intent>` | Find the best skill for an intent |
+| `skill-router search <query>` | Search skills with ranking |
+| `skill-router list` | Browse skills by category |
+| `skill-router detail <id>` | Show skill details |
+| `skill-router config` | Show current configuration |
+
+### For Codex
+
+```bash
+# Create skills directory
+mkdir -p ~/.codex/skills
+
+# Clone myskills
+cd ~/.codex/skills
+git clone https://github.com/mingyouagi/myskills.git
+
+# Install dependencies
+cd myskills/skills/skill-router
+npm install && npm link
+
+# Create symlink
+ln -sf ~/.codex/skills/myskills/skills/skill-router ~/.codex/skills/skill-router
+```
+
+### For OpenCode
+
+```bash
+# Create skills directory
+mkdir -p ~/.opencode/skills
+
+# Clone myskills
+cd ~/.opencode/skills
+git clone https://github.com/mingyouagi/myskills.git
+
+# Install dependencies
+cd myskills/skills/skill-router
+npm install && npm link
+
+# Create symlink
+ln -sf ~/.opencode/skills/myskills/skills/skill-router ~/.opencode/skills/skill-router
+```
 
 ### For npm/JavaScript Projects
 
 > **Note**: Not yet published to npm. Use Git installation:
 
 ```bash
-cd ~/.claude/skills
 git clone https://github.com/mingyouagi/myskills.git
+cd myskills/skills/skill-router
+npm install && npm link
 ```
 
 ## Usage
